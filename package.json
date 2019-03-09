@@ -7,7 +7,7 @@
     "start": "gulp nodemon",
     "dev": "gulp",
     "build": "babel src -d dist",
-    "production": "node dist/app.js"
+    "production": "pm2 start dist/app.js --name='ppsm-koa2-server'"
   },
   "dependencies": {
     "crypto": "^1.0.1",
