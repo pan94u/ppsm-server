@@ -61,3 +61,12 @@ export let getJsonLength = (jsonData) => {
   }
   return arr.length
 }
+
+//格式化返回
+export let res = (data, msg, code) => {
+ return {
+   data: data?data:null,
+   msg: msg?msg:null,
+   code: code?code:0
+ }
+}

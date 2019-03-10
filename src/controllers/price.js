@@ -1,4 +1,5 @@
 import models from '../models/index'
+import {res} from '../tool/common'
 export let Get =async (ctx) => {
   console.log(`access Get~`)
   models.price.priceDB.belongsTo(models.model.modelDB, {foreignKey:'modelId', targetKey: 'id'})
@@ -35,8 +36,5 @@ export let Get =async (ctx) => {
     })
   }
   await Promise.all(group.map(fn)) //等待group遍历处理完成
-  ctx.body = {
-    result: result,
-    status: 200
-  }
+  ctx.body = res(result,'success')
 }
