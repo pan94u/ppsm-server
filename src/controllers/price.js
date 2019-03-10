@@ -1,5 +1,5 @@
 import models from '../models/index'
-import {res} from '../tool/common'
+import {res} from '../tool/Common'
 export let Get =async (ctx) => {
   console.log(`access Get~`)
   models.price.priceDB.belongsTo(models.model.modelDB, {foreignKey:'modelId', targetKey: 'id'})
