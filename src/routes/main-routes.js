@@ -4,7 +4,8 @@ import controllers from '../controllers/index.js'
 const router = new KoaRouter()
 
 router
-  .get('/hello', controllers.price.Get)
+  .get('/price', controllers.price.Get)
+  .get('/price/updateTime', controllers.extra.updateTime)
   .get('/public/get', function (ctx, next) {
     ctx.body = '禁止访问！'
   }) // 以/public开头则不用经过权限认证

@@ -31,7 +31,7 @@ app
   })
   .use(ErrorRoutesCatch())
   .use(KoaStatic('assets', path.resolve(__dirname, '../assets'))) // Static resource
-  .use(jwt({ secret: publicKey }).unless({ path: [/^\/public|\/user\/login|\/user\/reg|\/assets|\/hello/] }))
+  .use(jwt({ secret: publicKey }).unless({ path: [/^\/public|\/user\/login|\/user\/reg|\/assets|\/hello|\/price/] }))
   .use(KoaBody({
     multipart: true,
     strict: false,

@@ -39,3 +39,5 @@ export let Get =async (ctx) => {
   await Promise.all(group.map(fn)) //等待group遍历处理完成
   ctx.body = res(result,'success')
 }
+
+
