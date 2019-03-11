@@ -4,13 +4,14 @@ export let Get =async (ctx) => {
   console.log(`access Get~`)
   models.price.priceDB.belongsTo(models.model.modelDB, {foreignKey:'modelId', targetKey: 'id'})
   let group = await models.group.groupDB.findAll({
-    attributes: ['id', ['name', 'modelName']]
+    attributes: ['id', ['name', 'groupName']],
+    order: [['weight','DESC']] //按权重排序
   })
   let result = []
   let fn = (elem) => {
     return new Promise(async (resolve) => {
       let groupId = elem.dataValues.id
-      let groupName = elem.dataValues.modelName
+      let groupName = elem.dataValues.groupName
       let priceObj = {}
       let priceSingle = await models.price.priceDB.findAll({
         include: [{
