@@ -19,7 +19,8 @@ export let Get =async (ctx) => {
           attributes: [['name', 'modelName'], 'color'],
         }],
         attributes: ['id', 'price', 'modelId', 'groupId', 'country'],
-        where: {groupId,status:0}
+        where: {groupId,status:0},
+        order: [['modelId','ASC']]
       }) //查询价格（左连接型号表）
       for(let i in priceSingle) {
         for(let j in priceSingle[i].sp_model.dataValues) {
