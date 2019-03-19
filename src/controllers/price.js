@@ -4,7 +4,7 @@ export let Get =async (ctx) => {
   console.log(`access Get~`)
   models.price.priceDB.belongsTo(models.model.modelDB, {foreignKey:'modelId', targetKey: 'id'})
   let group = await models.group.groupDB.findAll({
-    attributes: ['id', ['name', 'groupName'], 'hot', 'new'],
+    attributes: ['id', ['name', 'groupName'], 'hot', 'new', 'weight'],
     order: [['weight','DESC']] //按权重排序
   })
   let result = []
@@ -14,6 +14,7 @@ export let Get =async (ctx) => {
       let groupName = elem.dataValues.groupName
       let hotFlag = elem.dataValues.hot
       let newFlag = elem.dataValues.new
+      let weight = elem.dataValues.weight
       let priceObj = {}
       let priceSingle = await models.price.priceDB.findAll({
         include: [{
@@ -35,6 +36,7 @@ export let Get =async (ctx) => {
         groupName,
         hotFlag,
         newFlag,
+        weight,
         item: priceSingle
       }
       result.push(priceObj)
@@ -42,7 +44,20 @@ export let Get =async (ctx) => {
     })
   }
   await Promise.all(group.map(fn)) //等待group遍历处理完成
+  result.sort(sortByName('weight'))
   ctx.body = res(result,'success')
 }
 
-
+function sortByName(propertyName) {
+  return function(obj1, obj2) {
+    let value1 = obj1[propertyName]
+    let value2 = obj2[propertyName]
+    if(value2 > value1) {
+      return 1;
+    } else if (value2 < value1) {
+      return -1;
+    } else {
+      return 0
+    }
+  }
+} 
