@@ -12,6 +12,8 @@ export let Get =async (ctx) => {
     return new Promise(async (resolve) => {
       let groupId = elem.dataValues.id
       let groupName = elem.dataValues.groupName
+      let hotFlag = elem.dataValues.hot
+      let newFlag = elem.dataValues.new
       let priceObj = {}
       let priceSingle = await models.price.priceDB.findAll({
         include: [{
@@ -31,6 +33,8 @@ export let Get =async (ctx) => {
       priceObj = {
         groupId,
         groupName,
+        hotFlag,
+        newFlag,
         item: priceSingle
       }
       result.push(priceObj)
