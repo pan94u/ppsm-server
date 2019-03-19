@@ -10,6 +10,7 @@
     "production": "pm2 start dist/app.js --name='ppsm-koa2-server'"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "crypto": "^1.0.1",
     "jsonwebtoken": "^8.1.0",
     "koa": "^2.3.0",

@@ -4,7 +4,7 @@ export let Get =async (ctx) => {
   console.log(`access Get~`)
   models.price.priceDB.belongsTo(models.model.modelDB, {foreignKey:'modelId', targetKey: 'id'})
   let group = await models.group.groupDB.findAll({
-    attributes: ['id', ['name', 'groupName']],
+    attributes: ['id', ['name', 'groupName'], 'hot', 'new'],
     order: [['weight','DESC']] //按权重排序
   })
   let result = []

@@ -4,6 +4,7 @@ import controllers from '../controllers/index.js'
 const router = new KoaRouter()
 
 router
+  .get('/price/wxtest', controllers.wxapi.code2Session)
   .get('/price', controllers.price.Get)
   .get('/price/updateTime', controllers.extra.updateTime)
   .get('/public/get', function (ctx, next) {
