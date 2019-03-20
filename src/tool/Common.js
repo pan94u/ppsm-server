@@ -70,3 +70,14 @@ export let res = (data, msg, code) => {
    code: code?code:0
  }
 }
+
+export let notNull = (val, name) => {
+  if(val === null || val===undefined || val === '') {
+    throw {
+      msg: `${name}不能为空！`,
+      code: -2
+    }
+  } else {
+    return val
+  }
+}

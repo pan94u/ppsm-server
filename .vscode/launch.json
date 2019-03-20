@@ -7,8 +7,8 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
-      "program": "${workspaceFolder}\\build/dev-server.js"
+      "name": "胖胖数码服务度调试",
+      "program": "${workspaceFolder}/build/dev-server.js"
     }
   ]
 }

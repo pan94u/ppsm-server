@@ -4,7 +4,8 @@ import controllers from '../controllers/index.js'
 const router = new KoaRouter()
 
 router
-  .get('/price/wxtest', controllers.wxapi.code2Session)
+  .post('/price/sh', controllers.collect.add)
+  .get('/wxapi/login', controllers.wxapi.code2Session)
   .get('/price', controllers.price.Get)
   .get('/price/updateTime', controllers.extra.updateTime)
   .get('/public/get', function (ctx, next) {
@@ -12,10 +13,6 @@ router
   }) // 以/public开头则不用经过权限认证
   .post('/user/reg', controllers.user.Reg)
   .all('/upload', controllers.upload.default)
-  .get('/api/:name', controllers.api.Get)
-  .post('/api/:name', controllers.api.Post)
-  .put('/api/:name', controllers.api.Put)
-  .del('/api/:name', controllers.api.Delect)
   .post('/auth/:action', controllers.auth.Post)
 
 module.exports = router

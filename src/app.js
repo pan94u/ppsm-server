@@ -43,8 +43,19 @@ app
     textLimit: '10mb'
   })) // Processing request
   // .use(PluginLoader(SystemConfig.System_plugin_path))
+  .use((ctx, next) => {
+    return next().catch((err) => {
+      console.log(err)
+      ctx.status = 500
+      ctx.body = {
+        code: err.code,
+        msg: err.msg
+      }
+    })
+  })
   .use(MainRoutes.routes())
   .use(MainRoutes.allowedMethods())
+ 
   .use(ErrorRoutes())
 
 if (env === 'development') { // logger
