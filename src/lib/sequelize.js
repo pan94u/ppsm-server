@@ -77,9 +77,14 @@ export function defineModel (name, attributes) {
                   obj.status = 0;
               } else {
                   obj.updateAt = now;
-                  ++obj.version;
+                  obj.version++;
               }
-          }
+          },
+          beforeUpdate: function (obj) {
+            let now = Date.now();
+            obj.updateAt = now;
+            obj.version++;
+          },
       }
   });
   return model;

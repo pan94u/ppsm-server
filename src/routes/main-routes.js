@@ -4,7 +4,8 @@ import controllers from '../controllers/index.js'
 const router = new KoaRouter()
 
 router
-  .post('/price/sh', controllers.collect.add)
+  .post('/price/addEnterprisePurchase', controllers.collect.addEnterprisePurchase)
+  .post('/price/sh', controllers.collect.secondeHandCollect)
   .get('/wxapi/login', controllers.wxapi.code2Session)
   .get('/price', controllers.price.Get)
   .get('/price/updateTime', controllers.extra.updateTime)
