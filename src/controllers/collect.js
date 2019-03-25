@@ -11,12 +11,13 @@ export let secondeHandCollect = async (ctx) => {
     phoneNumber = notNull(body.phoneNumber, '联系方式'),
     userId = 'ppsm'
   if (!validator.isMobilePhone(phoneNumber + '', 'zh-CN')) {
-    throw {
+    let error = {
       msg: '号码格式错误！',
       code: -2
     }
+    throw error
   }
-  let result = await models.secondHand.shDB.create({userId,model,volume,quality,targetPrice,phoneNumber})
+  let result = await models.secondHand.shDB.create({ userId, model, volume, quality, targetPrice, phoneNumber })
   ctx.body = res({ id: result.id }, '添加成功')
 }
 
@@ -35,6 +36,29 @@ export let addEnterprisePurchase = async (ctx) => {
     targetPrice = notNull(needDetail.targetPrice, '期望价位'),
     num = notNull(needDetail.num, '数量'),
     userId = 'ppsm'
+  if (!validator.isMobilePhone(companyContactPhoneNumber + '', 'zh-CN')) {
+    let error = {
+      msg: '号码格式错误！',
+      code: -2
+    }
+    throw error
+  }
   let result = await models.company.default.create({ userId, companyName, companyContact, companyContactPhoneNumber, tradeMode, model, volume, quality, targetPrice, num })
+  ctx.body = res({ id: result.id }, '添加成功！')
+}
+
+export let addRecoveryRecord = async (ctx) => {
+  let body = ctx.request.body,
+    model = notNull(body.model, '机器型号'),
+    volume = notNull(body.volume, '容量'),
+    country = notNull(body.country, '国家'),
+    display = notNull(body.display, '屏幕状况'),
+    border = notNull(body.border, '边框状况'),
+    warranty = notNull(body.warranty, '保修情况'),
+    repairCase = notNull(body.repairCase, '进水或拆修'),
+    otherCase = body.otherCase,
+    phoneNumber = notNull(body.phoneNumber, '联系方式'),
+    userId = 'ppsm'
+  let result = await models.recovery.default.create({ userId, model, volume, country, display, border, warranty, repairCase, otherCase, phoneNumber })
   ctx.body = res({ id: result.id }, '添加成功！')
 }
