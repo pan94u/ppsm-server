@@ -62,21 +62,22 @@ export let getJsonLength = (jsonData) => {
   return arr.length
 }
 
-//格式化返回
-export let res = (data, msg, code) => {
- return {
-   data: data?data:null,
-   msg: msg?msg:null,
-   code: code?code:0
- }
+// 格式化返回
+export let res = (data = null, msg = null, code = 0) => {
+  return {
+    data: data,
+    msg: msg,
+    code: code
+  }
 }
 
 export let notNull = (val, name) => {
-  if(val === null || val===undefined || val === '') {
-    throw {
+  if (val === null || val === undefined || val === '') {
+    let error = {
       msg: `${name}不能为空！`,
       code: -2
     }
+    throw error
   } else {
     return val
   }
