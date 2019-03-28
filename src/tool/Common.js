@@ -71,6 +71,7 @@ export let res = (data = null, msg = null, code = 0) => {
   }
 }
 
+//表单检测空值
 export let notNull = (val, name) => {
   if (val === null || val === undefined || val === '') {
     let error = {
@@ -81,4 +82,9 @@ export let notNull = (val, name) => {
   } else {
     return val
   }
+}
+
+//检测空数组
+export let isEmptyArr = (arr) => {
+  return Array.isArray(arr) && arr.length === 0
 }
