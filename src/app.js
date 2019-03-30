@@ -48,8 +48,8 @@ app
       console.log(err)
       ctx.status = 500
       ctx.body = {
-        code: err.code,
-        msg: err.msg
+        code: err.code || -1,
+        msg: err.msg || '服务器出门遛弯了，请稍后再试！'
       }
     })
   })
