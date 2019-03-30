@@ -5,7 +5,8 @@ export let Get =async (ctx) => {
   models.price.priceDB.belongsTo(models.model.modelDB, {foreignKey:'modelId', targetKey: 'id'})
   let group = await models.group.groupDB.findAll({
     attributes: ['id', ['name', 'groupName'], 'hot', 'new', 'weight'],
-    order: [['weight','DESC']] //按权重排序
+    order: [['weight','DESC']], //按权重排序
+    where:{status:0}
   })
   let result = []
   let fn = (elem) => {
@@ -23,7 +24,7 @@ export let Get =async (ctx) => {
         }],
         attributes: ['id', 'price', 'modelId', 'groupId', 'country'],
         where: {groupId,status:0},
-        order: [['modelId','ASC']]
+        order: [['modelId', 'ASC']]
       }) //查询价格（左连接型号表）
       for(let i in priceSingle) {
         for(let j in priceSingle[i].sp_model.dataValues) {
@@ -31,6 +32,7 @@ export let Get =async (ctx) => {
         } //遍历model 把结果循环到外层
         delete priceSingle[i].dataValues.sp_model //遍历完成后删除model
       }
+      // priceSingle.sort(sortByName('modelName'))
       priceObj = {
         groupId,
         groupName,
