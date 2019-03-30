@@ -3,13 +3,11 @@ module.exports = function () {
     return next().catch((err) => {
       switch (err.status) {
         case 401:
-          ctx.status = 200
+          ctx.status = 401
           ctx.body = {
-            status: 401,
-            result: {
-              err: 'Authentication Error',
-              errInfo: 'Protected resource, use Authorization header to get access.'
-            }
+            code: -1,
+            data: null,
+            msg: '登录信息失效，请重新登录'
           }
           break
         default:

@@ -18,8 +18,9 @@ export let CheckAuth = (ctx) => {
     let decoded = jwt.verify(token.substr(7), publicKey)
     if (decoded.userInfo) {
       return {
-        status: 1,
-        result: decoded.userInfo
+        code: 0,
+        data: decoded.userInfo,
+        msg: 'availability'
       }
     } else {
       return {
@@ -42,8 +43,8 @@ export let CheckAuth = (ctx) => {
 export let Post = (ctx) => {
   switch (ctx.params.action) {
     case 'check':
-      return CheckAuth(ctx).then(result => { ctx.body = result })
+      ctx.body = CheckAuth(ctx)
     default:
-      return CheckAuth(ctx).then(result => { ctx.body = result })
+      ctx.body = CheckAuth(ctx)
   }
 }
