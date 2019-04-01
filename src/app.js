@@ -8,8 +8,8 @@ import path from 'path'
 import MainRoutes from './routes/main-routes'
 import ErrorRoutesCatch from './middleware/ErrorRoutesCatch'
 import ErrorRoutes from './routes/error-routes'
-import jwt from 'koa-jwt'
 import fs from 'fs'
+import { CheckAuth } from './controllers/auth'
 // import PluginLoader from './lib/PluginLoader'
 
 const app = new Koa2()
@@ -31,7 +31,8 @@ app
   })
   .use(ErrorRoutesCatch())
   .use(KoaStatic('assets', path.resolve(__dirname, '../assets'))) // Static resource
-  .use(jwt({ secret: publicKey }).unless({ path: [/^\/public|\/user\/login|\/wxapi\/login|\/user\/reg|\/assets|\/hello|\/price/] }))
+  //集成koa-unless
+  .use(CheckAuth().unless({ path: [/^\/public|\/user\/login|\/wxapi\/login|\/wxapi\/logout|\/user\/reg|\/assets|\/hello|\/price/] }))
   .use(KoaBody({
     multipart: true,
     strict: false,
@@ -46,7 +47,7 @@ app
   .use((ctx, next) => {
     return next().catch((err) => {
       console.log(err)
-      ctx.status = 500
+      ctx.status = err.statusCode || 500
       ctx.body = {
         code: err.code || -1,
         msg: err.msg || '服务器出门遛弯了，请稍后再试！'
@@ -55,7 +56,7 @@ app
   })
   .use(MainRoutes.routes())
   .use(MainRoutes.allowedMethods())
- 
+
   .use(ErrorRoutes())
 
 if (env === 'development') { // logger
