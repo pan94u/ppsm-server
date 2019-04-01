@@ -35,5 +35,9 @@ export const userDB = defineModel('pss_user', {
     avatarUrl: {
       type: Sequelize.STRING,
       allowNull: true
-    } //微信头像
+    }, //微信头像
+    token: {
+      type: Sequelize.STRING,
+      allowNull: true
+    } //token
 });

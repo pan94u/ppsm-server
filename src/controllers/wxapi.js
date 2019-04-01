@@ -1,7 +1,7 @@
 import models from '../models/index'
 import { res, isEmptyArr } from '../tool/Common'
 import request from '../tool/request'
-import { signToken } from '../tool/token'
+import { signToken, checkToken } from './auth'
 import fs from 'fs'
 import path from 'path'
 import jwt from 'jsonwebtoken'
@@ -30,8 +30,8 @@ export let code2Session = async (ctx) => {
     openid = login.openid
   //用openId登录并返回用户信息
   let userInfo = await wxLogin(openid, session_key, encryptedData, signature, iv)
-  let token = signToken({ userInfo: { userId: userInfo.userId } })
-  userInfo = {
+
+  let result = {
     userId: userInfo.userId,
     nickName: userInfo.nickName,
     gender: userInfo.gender,
@@ -39,9 +39,15 @@ export let code2Session = async (ctx) => {
     province: userInfo.province,
     country: userInfo.country,
     avatarUrl: userInfo.avatarUrl,
-    token
+    token: userInfo.token
   }
-  ctx.body = res(userInfo, 'success')
+  ctx.body = res(result, 'success')
+}
+
+export let wxLogout = async (ctx) => { 
+  let result = await models.user.userDB.update({ token: null }, { where: { userId: ctx.state.userId } })
+  console.log(result)
+  ctx.body = res('退出成功', 'success')
 }
 
 //用openid创建user
@@ -54,12 +60,13 @@ async function createWxappUser(openid, session_key, userInfo) {
     throw error
   }
   let userId = createRandomId()
-  let user = await models.user.userDB.create({ userId, openid, session_key, nickName: userInfo.nickName, gender: userInfo.gender, language: userInfo.language, city: userInfo.city, province: userInfo.province, country: userInfo.country, avatarUrl: userInfo.avatarUrl })
-  return user[0]
+  let token = signToken({ userInfo: { userId: userId } })
+  let user = await models.user.userDB.create({ userId, openid, session_key, nickName: userInfo.nickName, gender: userInfo.gender, language: userInfo.language, city: userInfo.city, province: userInfo.province, country: userInfo.country, avatarUrl: userInfo.avatarUrl, token })
+  return user
 }
 
 //用openid登录并获取userInfo
-async function wxLogin(openid, session_key, encryptedData, signature, iv) {
+async function wxLogin(openid, session_key, encryptedData, signature, iv, token) {
   //解密用户信息
   let pc = new WXBizDataCrypt(ppsmWxappAppId, session_key)
   let userInfo = await pc.decryptData(encryptedData, iv)
@@ -67,12 +74,14 @@ async function wxLogin(openid, session_key, encryptedData, signature, iv) {
   let user = await models.user.userDB.findAll({ where: { openid } })
   //不存在的话用openid为唯一key新建用户
   if (isEmptyArr(user)) {
+    //创建并返回用户信息
     userInfo = await createWxappUser(openid, session_key, userInfo)
-    //登录user
     return userInfo
   } else {
-    //登录user
-    return user[0]
+    let token = signToken({ userInfo: { userId: user[0].userId } })
+      await models.user.userDB.update({ token }, { where: { userId: user[0].userId } })
+      user[0].token = token
+      return user[0]
   }
 }
 
