@@ -9,7 +9,7 @@ export let secondeHandCollect = async (ctx) => {
     quality = notNull(body.quality, '成色'),
     targetPrice = notNull(body.targetPrice, '期望价位'),
     phoneNumber = notNull(body.phoneNumber, '联系方式'),
-    userId = ctx.state.user.userInfo.userId
+    userId = ctx.state.userId
   if (!validator.isMobilePhone(phoneNumber + '', 'zh-CN')) {
     let error = {
       msg: '号码格式错误！',
@@ -35,7 +35,7 @@ export let addEnterprisePurchase = async (ctx) => {
     quality = notNull(needDetail.quality, '成色'),
     targetPrice = notNull(needDetail.targetPrice, '期望价位'),
     num = notNull(needDetail.num, '数量'),
-    userId = ctx.state.user.userInfo.userId
+    userId = ctx.state.userId
   if (!validator.isMobilePhone(companyContactPhoneNumber + '', 'zh-CN')) {
     let error = {
       msg: '号码格式错误！',
@@ -58,7 +58,7 @@ export let addRecoveryRecord = async (ctx) => {
     repairCase = notNull(body.repairCase, '进水或拆修'),
     otherCase = body.otherCase,
     phoneNumber = notNull(body.phoneNumber, '联系方式'),
-    userId = ctx.state.user.userInfo.userId
+    userId = ctx.state.userId
   let result = await models.recovery.default.create({ userId, model, volume, country, display, border, warranty, repairCase, otherCase, phoneNumber })
   ctx.body = res({ id: result.id }, '添加成功！')
 }
