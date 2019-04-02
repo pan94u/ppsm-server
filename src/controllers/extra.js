@@ -9,11 +9,11 @@ export let updateTime = async (ctx) => {
 }
 
 export let wxappFeedback = async (ctx) => {
-  await models.feedback.feddbackDB()
+  await models.feedback.feddbackDB.sync()
   let body = ctx.request.body,
-    name = notNull(name, '姓名'),
-    email = notNull(email, '邮箱'),
-    feedback = notNull(feedback, '意见'),
+    name = notNull(body.name, '姓名'),
+    email = notNull(body.email, '邮箱'),
+    feedback = notNull(body.feedback, '意见'),
     userId = ctx.state.userId,
     result
     result = await models.feedback.feddbackDB.create({name, email, feedback, userId})
