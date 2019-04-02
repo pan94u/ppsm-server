@@ -75,6 +75,7 @@ export let res = (data = null, msg = null, code = 0) => {
 export let notNull = (val, name) => {
   if (val === null || val === undefined || val === '') {
     let error = {
+      statusCode: 500,
       msg: `${name}不能为空！`,
       code: -2
     }
