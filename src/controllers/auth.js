@@ -54,8 +54,7 @@ export let CheckAuth = () => {
 
       // 通过将用户名写入ctx并next
       ctx.state.userId = userId
-
-      next()
+      return next()
     } catch (err) {
       console.log(err)
       ctx.status = 403
