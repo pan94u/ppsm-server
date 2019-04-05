@@ -26,6 +26,14 @@ export let code2Session = async (ctx) => {
     method: 'GET',
     params: { appid, secret, js_code, grant_type: 'authorization_code' }
   })
+  if(login.errcode == 40163) {
+    let error = {
+      msg: 'code已被使用，请重新登录！',
+      code: 40163
+    }
+    throw error
+  }
+  console.log(login)
   let session_key = login.session_key,
     openid = login.openid
   //用openId登录并返回用户信息
