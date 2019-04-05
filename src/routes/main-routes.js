@@ -18,5 +18,8 @@ router
   .post('/user/reg', controllers.user.Reg)
   .all('/upload', controllers.upload.default)
   .post('/auth/:action', controllers.auth.Post)
+  // 获取配置api
+  .get('/wxapi/config/sh', controllers.config.sh)
+  .get('/wxapi/config/recoveryRecord', controllers.config.recoveryRecord)
 
 module.exports = router
