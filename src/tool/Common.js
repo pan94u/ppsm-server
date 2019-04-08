@@ -89,3 +89,7 @@ export let notNull = (val, name) => {
 export let isEmptyArr = (arr) => {
   return Array.isArray(arr) && arr.length === 0
 }
+
+export let createRandomId = (length = 3) => {
+  return Number(Math.random().toString().substr(3, length) + Date.now()).toString(36);
+}
