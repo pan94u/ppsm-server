@@ -1,10 +1,9 @@
 import models from '../models/index'
-import { res, isEmptyArr } from '../tool/Common'
+import { res, isEmptyArr, createRandomId } from '../tool/Common'
 import request from '../tool/request'
-import { signToken, checkToken } from './auth'
+import { signToken } from './auth'
 import fs from 'fs'
 import path from 'path'
-import jwt from 'jsonwebtoken'
 //公钥
 const publicKey = fs.readFileSync(path.join(__dirname, '../../publicKey.pub'))
 //微信小程序解密模块
@@ -67,7 +66,7 @@ async function createWxappUser(openid, session_key, userInfo) {
     }
     throw error
   }
-  let userId = createRandomId()
+  let userId = 'wx_' + createRandomId()
   let token = signToken({ userInfo: { userId: userId } })
   let user = await models.user.userDB.create({ userId, openid, session_key, nickName: userInfo.nickName, gender: userInfo.gender, language: userInfo.language, city: userInfo.city, province: userInfo.province, country: userInfo.country, avatarUrl: userInfo.avatarUrl, token })
   return user
@@ -91,8 +90,4 @@ async function wxLogin(openid, session_key, encryptedData, signature, iv, token)
       user[0].token = token
       return user[0]
   }
-}
-
-function createRandomId(length = 3) {
-  return Number(Math.random().toString().substr(3, length) + Date.now()).toString(36);
 }
