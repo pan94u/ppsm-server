@@ -6,6 +6,7 @@ import {
 } from './config'
 import path from 'path'
 import MainRoutes from './routes/main-routes'
+import AdminRoutes from './routes/admin-routes'
 import ErrorRoutesCatch from './middleware/ErrorRoutesCatch'
 import ErrorRoutes from './routes/error-routes'
 import fs from 'fs'
@@ -32,7 +33,7 @@ app
   .use(ErrorRoutesCatch())
   .use(KoaStatic('assets', path.resolve(__dirname, '../assets'))) // Static resource
   //集成koa-unless
-  .use(CheckAuth().unless({ path: [/^\/public|\/user\/login|\/wxapi\/login|\/wxapi\/logout|\/user\/reg|\/assets|\/hello|\/price/] }))
+  .use(CheckAuth().unless({ path: [/^\/public|\/*\/login|\/*\/reg|\/assets|\/hello|\/price/] }))
   .use(KoaBody({
     multipart: true,
     strict: false,
@@ -56,7 +57,8 @@ app
   })
   .use(MainRoutes.routes())
   .use(MainRoutes.allowedMethods())
-
+  .use(AdminRoutes.routes())
+  .use(AdminRoutes.routes())
   .use(ErrorRoutes())
 
 if (env === 'development') { // logger
