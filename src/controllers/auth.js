@@ -31,8 +31,16 @@ export let CheckAuth = () => {
         return
       }
 
+      let userInfo
+      //通过路径识别不同token
+      if(ctx.request.path.match(/^\/admin/)) {
+        userInfo = await models.adminUser.userDB.findAll({ where: { userId } })
+      }
+      else {
+        userInfo = await models.user.userDB.findAll({ where: { userId } })
+      }
       // 检查token是否过期
-      let userInfo = await models.user.userDB.findAll({ where: { userId } })
+
       if (userInfo.length === 0) {
         ctx.status = 403
         ctx.body = {
