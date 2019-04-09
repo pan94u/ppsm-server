@@ -1,10 +1,10 @@
 import models from '../models/index'
-import { res, notNull } from '../tool/Common'
+import { res } from '../tool/Common'
 
 //二手求购配置信息
 export let sh = async (ctx) => {
-  let qualityData = await models.qualityList.qualityListDB.findAll(),
-    volumeData = await models.volumeList.volumeListDB.findAll(),
+  let qualityData = await models.qualityList.qualityListDB.findAll({ where: { status: 0 } }),
+    volumeData = await models.volumeList.volumeListDB.findAll({ where: { status: 0 } }),
     qualityList = [],
     volumeList = [],
     result = {}
@@ -28,8 +28,8 @@ export let sh = async (ctx) => {
 
 //回收登记配置信息
 export let recoveryRecord = async (ctx) => {
-  let volumeData = await models.volumeList.volumeListDB.findAll(),
-    countryData = await models.countryList.countryListDB.findAll(),
+  let volumeData = await models.volumeList.volumeListDB.findAll({ where: { status: 0 } }),
+    countryData = await models.countryList.countryListDB.findAll({ where: { status: 0 } }),
     volumeList = [],
     countryList = [],
     result = {}
