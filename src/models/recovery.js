@@ -13,6 +13,8 @@ export const rcDB = defineModel('pss_recovery', {
     repairCase: Sequelize.INTEGER, //进水或拆修
     otherCase: Sequelize.STRING, //其他状况
     phoneNumber: Sequelize.STRING, //电话号码
+    replyStatus: Sequelize.INTEGER, //回复状态
+    replyText: Sequelize.STRING //回复内容
 });
 
 export default rcDB

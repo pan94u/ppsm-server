@@ -13,6 +13,8 @@ const companyDB = defineModel('pss_company', {
     quality: Sequelize.STRING, //成色
     targetPrice: Sequelize.STRING, //期望价位
     num: Sequelize.INTEGER, //需求数量
+    replyStatus: Sequelize.INTEGER, //回复状态
+    replyText: Sequelize.STRING //回复内容
 });
 
 export default companyDB
