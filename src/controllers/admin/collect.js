@@ -10,7 +10,14 @@ export let collectList = async (ctx) => {
     result
   switch (type) {
     case 'recovery':
+      models.recovery.default.hasMany(models.user.userDB, { foreignKey: 'userId', sourceKey: 'userId' })
       result = await models.recovery.default.findAndCountAll({
+        include: [
+          {
+            model: models.user.userDB,
+            attributes: ['userId', 'openid', 'nickName', 'avatarUrl']
+          }
+        ],
         where: { status: 0 },
         limit: pageSize,
         offset: currentPage ? (currentPage - 1) * pageSize : null
@@ -18,7 +25,14 @@ export let collectList = async (ctx) => {
       result.pageNum = Math.ceil(result.count / pageSize)
       break
     case 'company':
+      models.company.companyDB.hasMany(models.user.userDB, { foreignKey: 'userId', sourceKey: 'userId' })
       result = await models.company.companyDB.findAll({
+        include: [
+          {
+            model: models.user.userDB,
+            attributes: ['userId', 'openid', 'nickName', 'avatarUrl']
+          }
+        ],
         where: { status: 0 },
         limit: pageSize,
         offset: currentPage ? (currentPage - 1) * pageSize : null
@@ -40,10 +54,10 @@ export let collectList = async (ctx) => {
         ],
         where: { status: 0 },
         limit: pageSize,
-          offset: currentPage ? (currentPage - 1) * pageSize : null
-        })
-        result.pageNum = Math.ceil(result.count / pageSize)
-        }
+        offset: currentPage ? (currentPage - 1) * pageSize : null
+      })
+      result.pageNum = Math.ceil(result.count / pageSize)
+  }
   ctx.body = res(result)
 }
 
