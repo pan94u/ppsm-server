@@ -53,6 +53,14 @@ export let register = async (ctx) => {
 
 //返回所有用户
 export let allPpsmUser = async (ctx) => {
-  let result = await models.user.userDB.findAll({})
+  let body = ctx.request.body,
+    pageSize = body.pageSize,
+    currentPage = body.currentPage
+  let result = await models.user.userDB.findAndCountAll({
+    attributes: ['id', 'userId', 'openId', 'nickName', 'gender', 'language', 'city', 'province', 'country', 'avatarUrl', 'createAt'],
+    limit: pageSize,
+    offset: currentPage ? (currentPage - 1) * pageSize : null
+  })
+  result.pageNum = Math.ceil(result.count / pageSize)
   ctx.body = res(result)
 }
