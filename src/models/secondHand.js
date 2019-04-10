@@ -9,4 +9,6 @@ export const shDB = defineModel('pss_second', {
     quality: Sequelize.STRING, //成色
     targetPrice: Sequelize.STRING, //期望价位
     phoneNumber: Sequelize.STRING, //电话号码
+    replyStatus: Sequelize.INTEGER, //回复状态
+    replyText: Sequelize.STRING //回复内容
 });
