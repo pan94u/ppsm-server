@@ -89,7 +89,46 @@ export let deleteCountry = async (ctx) => {
   }
 }
 
+// 成色增删改查
 export let qualityList = async (ctx) => {
   let result = await models.qualityList.qualityListDB.findAll({ where: { status: 0 } })
   ctx.body = res(result)
+}
+
+export let addQuality = async (ctx) => {
+  let body = ctx.request.body,
+    qualityName = notNull(body.qualityName, '国家名称')
+  let result = await models.qualityList.qualityListDB.create({ name: qualityName })
+  ctx.body = res(result, '添加成功')
+}
+
+export let updateQuality = async (ctx) => {
+  let body = ctx.request.body,
+    qualityId = notNull(body.qualityId, 'qualityId'),
+    qualityName = notNull(body.qualityName, '国家名称')
+  let result = await models.qualityList.qualityListDB.update({ name: qualityName }, { where: { id: qualityId }, individualHooks: true })
+  if (result[0] == 0) {
+    ctx.status = 500
+    ctx.body = res(null, '更新失败')
+  } else {
+    ctx.body = res(result, '更新成功')
+  }
+}
+
+export let deleteQuality = async (ctx) => {
+  let body = ctx.request.body,
+    qualityId = notNull(body.qualityId, 'countryId'),
+    force = body.force,
+    result
+  if (force) {
+    result = await models.qualityList.qualityListDB.destroy({ where: { id: qualityId } })
+  } else {
+    result = await models.qualityList.qualityListDB.update({ status: 2 }, { where: { id: qualityId }, individualHooks: true })
+  }
+  if (result[0] == 0) {
+    ctx.status = 500
+    ctx.body = res(null, '删除失败')
+  } else {
+    ctx.body = res(result, '删除成功')
+  }
 }
