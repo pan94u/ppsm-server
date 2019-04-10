@@ -27,5 +27,6 @@ router
   .delete('/enum/quality', controllers.admin.enum.deleteQuality)
 
   // 提交管理
-
+  .get('/collect/:type', controllers.admin.collect.collectList)
+  .put('/collect/:type', controllers.admin.collect.updateCollect)
 module.exports = router
