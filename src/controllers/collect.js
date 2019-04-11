@@ -17,7 +17,8 @@ export let secondeHandCollect = async (ctx) => {
     }
     throw error
   }
-  let result = await models.secondHand.shDB.create({ userId, model, volume, quality, targetPrice, phoneNumber })
+  let formId = createFormId()
+  let result = await models.secondHand.shDB.create({ userId, formId, model, volume, quality, targetPrice, phoneNumber })
   ctx.body = res({ id: result.id }, '添加成功')
 }
 
@@ -43,8 +44,9 @@ export let addEnterprisePurchase = async (ctx) => {
     }
     throw error
   }
-  let result = await models.company.default.create({ userId, companyName, companyContact, companyContactPhoneNumber, tradeMode, model, volume, quality, targetPrice, num })
-  ctx.body = res({ id: result.id }, '添加成功！')
+  let formId = createFormId()
+  let result = await models.company.default.create({ userId, formId, companyName, companyContact, companyContactPhoneNumber, tradeMode, model, volume, quality, targetPrice, num })
+  ctx.body = res({ formId: result.formId }, '添加成功！')
 }
 
 export let addRecoveryRecord = async (ctx) => {
@@ -59,6 +61,26 @@ export let addRecoveryRecord = async (ctx) => {
     otherCase = body.otherCase,
     phoneNumber = notNull(body.phoneNumber, '联系方式'),
     userId = ctx.state.userId
-  let result = await models.recovery.default.create({ userId, model, volume, country, display, border, warranty, repairCase, otherCase, phoneNumber })
+  let formId = createFormId()
+  let result = await models.recovery.default.create({ userId, formId, model, volume, country, display, border, warranty, repairCase, otherCase, phoneNumber })
   ctx.body = res({ id: result.id }, '添加成功！')
+}
+
+export let getAllCollect = async (ctx) => {
+  let userId = userId = ctx.state.userId
+  let recovery = await models.recovery.default.findAll({ where: { userId } })
+  let company = await models.company.default.findAll({ where: { userId } })
+  let secondHand = await models.secondHand.shDB.findAll({ where: { userId } })
+  let result = {}
+  result = { secondHand, recovery, company }
+  ctx.body = res(result, '获取成功')
+}
+
+//生成随机表单ID
+function createFormId(length = 16) {
+  let date = new Date()
+  let year = '' + date.getFullYear()
+  let month = date.getMonth()< 9 ? '0' + (date.getMonth() + 1) : '' + (date.getMonth() + 1)
+  let day = '' + date.getDate()
+  return year + month + day + (Math.random()+Date.now().toString(36)).substr(2,length - (year + month + day).length)
 }
