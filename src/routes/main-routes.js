@@ -4,7 +4,9 @@ import controllers from '../controllers/index.js'
 const router = new KoaRouter()
 
 router
+  .get('/hello', controllers.extra.hello)
   .post('/wxapi/feedback', controllers.extra.wxappFeedback)
+  .get('/wxapi/collect', controllers.collect.getAllCollect)
   .post('/wxapi/collect/addRecoveryRecord', controllers.collect.addRecoveryRecord)
   .post('/wxapi/collect/addEnterprisePurchase', controllers.collect.addEnterprisePurchase)
   .post('/wxapi/collect/sh', controllers.collect.secondeHandCollect)
