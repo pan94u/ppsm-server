@@ -68,9 +68,9 @@ export let addRecoveryRecord = async (ctx) => {
 
 export let getAllCollect = async (ctx) => {
   let userId = userId = ctx.state.userId
-  let recovery = await models.recovery.default.findAll({ where: { userId } })
-  let company = await models.company.default.findAll({ where: { userId } })
-  let secondHand = await models.secondHand.shDB.findAll({ where: { userId } })
+  let recovery = await models.recovery.default.findAll({ where: { userId }, order: [['createAt', 'DESC']] })
+  let company = await models.company.default.findAll({ where: { userId }, order: [['createAt', 'DESC']] })
+  let secondHand = await models.secondHand.shDB.findAll({ where: { userId }, order: [['createAt', 'DESC']] })
   let result = {}
   result = { secondHand, recovery, company }
   ctx.body = res(result, '获取成功')
