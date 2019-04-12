@@ -16,6 +16,7 @@ export const rcDB = defineModel('pss_recovery', {
     phoneNumber: Sequelize.STRING, //电话号码
     replyStatus:{
       type: Sequelize.INTEGER,
+      defaultValue: 1,
       allowNull: true
     }, //回复状态
     replyText: {

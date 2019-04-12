@@ -16,6 +16,7 @@ const companyDB = defineModel('pss_company', {
     num: Sequelize.INTEGER, //需求数量
     replyStatus:{
       type: Sequelize.INTEGER,
+      defaultValue: 1,
       allowNull: true
     }, //回复状态
     replyText: {
