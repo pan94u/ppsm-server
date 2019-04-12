@@ -34,7 +34,7 @@ export let collectList = async (ctx) => {
           }
         ],
         where: { status: 0 },
-        attributes: ['id', 'companyName', 'companyContact', 'companyContactPhoneNumber', 'tradeMode', 'model', 'volume', 'quality', 'targetPrice', 'num', 'createAt', 'replyStatus', 'replyText'],
+        attributes: ['id', 'userId', 'companyName', 'companyContact', 'companyContactPhoneNumber', 'tradeMode', 'model', 'volume', 'quality', 'targetPrice', 'num', 'createAt', 'replyStatus', 'replyText'],
         limit: pageSize,
         offset: currentPage ? (currentPage - 1) * pageSize : null
       })
@@ -55,7 +55,7 @@ export let collectList = async (ctx) => {
           }
         ],
         where: { status: 0 },
-        attributes: ['id', 'model', 'volume', 'quality', 'targetPrice', 'phoneNumber', 'createAt', 'replyStatus', 'replyText'],
+        attributes: ['id', 'userId', 'model', 'volume', 'quality', 'targetPrice', 'phoneNumber', 'createAt', 'replyStatus', 'replyText'],
         limit: pageSize,
         offset: currentPage ? (currentPage - 1) * pageSize : null
       })

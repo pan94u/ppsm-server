@@ -6,6 +6,12 @@ export const feddbackDB = defineModel('pss_feedback', {
     name: Sequelize.STRING, //姓名
     email: Sequelize.STRING, //邮箱
     feedback: Sequelize.STRING, //意见内容
-    replyStatus: Sequelize.INTEGER, //回复状态
-    replyText: Sequelize.STRING //回复内容
+    replyStatus:{
+      type: Sequelize.INTEGER,
+      allowNull: true
+    }, //回复状态
+    replyText: {
+      type: Sequelize.STRING,
+      allowNull: true
+    } //回复内容
 });
