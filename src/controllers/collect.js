@@ -1,6 +1,9 @@
 import models from '../models/index'
 import { res, notNull } from '../tool/Common'
 import validator from 'validator'
+import { client as redis} from '../lib/redis'
+const {promisify} = require('util');
+const getAsync = promisify(redis.get).bind(redis);
 // validator中的参数加''是因为 validator 只校验String
 export let secondeHandCollect = async (ctx) => {
   let body = ctx.request.body,
@@ -9,7 +12,16 @@ export let secondeHandCollect = async (ctx) => {
     quality = notNull(body.quality, '成色'),
     targetPrice = notNull(body.targetPrice, '期望价位'),
     phoneNumber = notNull(body.phoneNumber, '联系方式'),
+    capId = notNull(body.capId, '验证码'),
+    capCode = notNull(body.capCode, '验证码'),
     userId = ctx.state.userId
+  if (capCode != await getAsync(capId)) {
+    let error = {
+      msg: '验证码错误！',
+      code: -3
+    }
+    throw error
+  }
   if (!validator.isMobilePhone(phoneNumber + '', 'zh-CN')) {
     let error = {
       msg: '号码格式错误！',
@@ -36,6 +48,8 @@ export let addEnterprisePurchase = async (ctx) => {
     quality = notNull(needDetail.quality, '成色'),
     targetPrice = notNull(needDetail.targetPrice, '期望价位'),
     num = notNull(needDetail.num, '数量'),
+    capId = notNull(body.capId),
+    capCode = notNull(body.capCode, '验证码')
     userId = ctx.state.userId
   if (!validator.isMobilePhone(companyContactPhoneNumber + '', 'zh-CN')) {
     let error = {
@@ -60,6 +74,8 @@ export let addRecoveryRecord = async (ctx) => {
     repairCase = notNull(body.repairCase, '进水或拆修'),
     otherCase = body.otherCase,
     phoneNumber = notNull(body.phoneNumber, '联系方式'),
+    capId = notNull(body.capId),
+    capCode = notNull(body.capCode, '验证码')
     userId = ctx.state.userId
   let formId = createFormId()
   let result = await models.recovery.default.create({ userId, formId, model, volume, country, display, border, warranty, repairCase, otherCase, phoneNumber })
