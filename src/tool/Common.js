@@ -1,6 +1,7 @@
 import {
   SystemConfig
 } from '../config'
+import { setItem, getItem} from '../lib/redis'
 
 // 截取字符串，多余的部分用...代替
 export let setString = (str, len) => {
@@ -93,3 +94,27 @@ export let isEmptyArr = (arr) => {
 export let createRandomId = (length = 3) => {
   return Number(Math.random().toString().substr(3, length) + Date.now()).toString(36);
 }
+
+export let checkCap = async (capId, capCode) => {
+  // 参数有问题
+  if (!capCode || !capId) {
+    let error = {
+      msg: '请输入验证码！',
+      code: -4
+    }
+    throw error
+  }
+  // 验证码不符
+  if (capCode != await getItem(capId)) {
+    let error = {
+      msg: '验证码错误！',
+      code: -3
+    }
+    throw error
+  }
+  // 验证通过后失效
+  if (capCode == await getItem(capId)) {
+    setItem(capKey, null)
+    return true
+  }
+} 
