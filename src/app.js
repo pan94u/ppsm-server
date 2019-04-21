@@ -2,7 +2,8 @@ import Koa2 from 'koa'
 import KoaBody from 'koa-body'
 import KoaStatic from 'koa-static2'
 import {
-  System as SystemConfig
+  System as SystemConfig,
+  session as SessionConfig
 } from './config'
 import path from 'path'
 import MainRoutes from './routes/main-routes'
@@ -11,14 +12,17 @@ import ErrorRoutesCatch from './middleware/ErrorRoutesCatch'
 import ErrorRoutes from './routes/error-routes'
 import fs from 'fs'
 import { CheckAuth } from './controllers/auth'
+import session from 'koa-session'
 // import PluginLoader from './lib/PluginLoader'
 
 const app = new Koa2()
 const env = process.env.NODE_ENV || 'development' // Current mode
 
 const publicKey = fs.readFileSync(path.join(__dirname, '../publicKey.pub'))
+app.keys = ['ppsm2019']
 
 app
+  .use(session(SessionConfig, app))
   .use((ctx, next) => {
     if (ctx.request.header.host.split(':')[0] === 'localhost' || ctx.request.header.host.split(':')[0] === '127.0.0.1') {
       ctx.set('Access-Control-Allow-Origin', '*')

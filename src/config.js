@@ -53,8 +53,8 @@ export let session = {
   renew: false, /** (boolean) renew session when session is nearly expired, so we can always keep user logged in. (default is false)*/
 };
 
-export let redius = {
+export let redis = {
   host: '127.0.0.1',
   port: '6379',
-  password: null
+  password: 'zxccxz'
 }
