@@ -40,7 +40,7 @@ export let addEnterprisePurchase = async (ctx) => {
     targetPrice = notNull(needDetail.targetPrice, '期望价位'),
     num = notNull(needDetail.num, '数量'),
     capId = notNull(body.capId),
-    capCode = notNull(body.capCode, '验证码')
+    capCode = notNull(body.capCode, '验证码'),
     userId = ctx.state.userId
   await checkCap(capId, capCode)
   if (!validator.isMobilePhone(companyContactPhoneNumber + '', 'zh-CN')) {
@@ -67,7 +67,7 @@ export let addRecoveryRecord = async (ctx) => {
     otherCase = body.otherCase,
     phoneNumber = notNull(body.phoneNumber, '联系方式'),
     capId = notNull(body.capId),
-    capCode = notNull(body.capCode, '验证码')
+    capCode = notNull(body.capCode, '验证码'),
     userId = ctx.state.userId
   await checkCap(capId, capCode)
   let formId = createFormId()
