@@ -22,5 +22,7 @@ router
   // 获取配置api
   .get('/wxapi/config/sh', controllers.config.sh)
   .get('/wxapi/config/recoveryRecord', controllers.config.recoveryRecord)
+  // 获取验证码
+  .get('/wxapi/captcha', controllers.extra.getCaptcha)
 
 module.exports = router

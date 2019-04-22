@@ -1,5 +1,5 @@
 import models from '../models/index';
-import { notNull, res } from '../tool/Common';
+import { notNull, res, checkCap } from '../tool/Common';
 import captchapng from 'captchapng2'
 import { setItem } from '../lib/redis'
 
@@ -16,6 +16,8 @@ export let wxappFeedback = async (ctx) => {
     name = body.name,
     email = body.email,
     feedback = notNull(body.feedback, '意见'),
+    capId = notNull(body.capId),
+    capCode = notNull(body.capCode, '验证码'),
     userId = ctx.state.userId,
     result
     await checkCap(capId, capCode)
@@ -23,7 +25,7 @@ export let wxappFeedback = async (ctx) => {
     ctx.body = res({ id: result.id }, '感谢您对胖胖数码的支持！')
 }
 
-export let hello = async (ctx) => {
+export let getCaptcha = async (ctx) => {
   let code = parseInt(Math.random() * 9000 + 1000);
   let png = new captchapng(80, 30, code)
   let date = new Date()
@@ -35,4 +37,8 @@ export let hello = async (ctx) => {
     value: new Buffer(buffer).toString('base64')
   }
   ctx.body = res(result)
+}
+
+export let hello = async (ctx) => {
+
 }
