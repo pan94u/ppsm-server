@@ -114,7 +114,7 @@ export let checkCap = async (capId, capCode) => {
   }
   // 验证通过后失效
   if (capCode == await getItem(capId)) {
-    setItem(capKey, null)
+    setItem(capId, null)
     return true
   }
 } 
