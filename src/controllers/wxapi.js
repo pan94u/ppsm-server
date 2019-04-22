@@ -86,7 +86,7 @@ async function wxLogin(openid, session_key, encryptedData, signature, iv, token)
     return userInfo
   } else {
     let token = signToken({ userInfo: { userId: user[0].userId } })
-      await models.user.userDB.update({ token }, { where: { userId: user[0].userId } })
+      await models.user.userDB.update({ token }, { where: { userId: user[0].userId }, individualHooks: true })
       user[0].token = token
       return user[0]
   }
