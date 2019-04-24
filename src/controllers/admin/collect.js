@@ -3,9 +3,9 @@ import { res, notNull } from '../../tool/Common'
 
 export let collectList = async (ctx) => {
   //分页相关
-  let body = ctx.request.body,
-    pageSize = body.pageSize,
-    currentPage = body.currentPage
+  let query = ctx.request.query,
+    pageSize = query.pageSize,
+    currentPage = query.currentPage
   let type = ctx.params.type,
     result
   switch (type) {
@@ -55,7 +55,7 @@ export let collectList = async (ctx) => {
           }
         ],
         where: { status: 0 },
-        attributes: ['id', 'userId', 'model', 'volume', 'quality', 'targetPrice', 'phoneNumber', 'createAt', 'replyStatus', 'replyText'],
+        attributes: ['id', 'formId','userId', 'model', 'volume', 'quality', 'targetPrice', 'phoneNumber', 'createAt', 'replyStatus', 'replyText'],
         limit: pageSize,
         offset: currentPage ? (currentPage - 1) * pageSize : null
       })

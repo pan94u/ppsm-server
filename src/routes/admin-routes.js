@@ -8,8 +8,10 @@ const router = new KoaRouter({
 router
   // 用户管理
   .post('/login', controllers.admin.user.login)
+  .post('/logout', controllers.admin.user.logout)
   .post('/register', controllers.admin.user.register)
   .get('/user', controllers.admin.user.allPpsmUser)
+  .get('/user/info', controllers.admin.user.userInfo)
   // 枚举管理
   .get('/enum/country', controllers.admin.enum.countryList)
   .post('/enum/country', controllers.admin.enum.addCountry)
