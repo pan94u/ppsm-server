@@ -9,7 +9,7 @@ export let login = async (ctx) => {
     md5 = crypto.createHash('md5'),
     userName = body.userName,
     passWord = md5.update(body.passWord).digest('hex')
-  let result = await models.adminUser.userDB.findAll({
+  let result = await models.adminUser.userDB.findOne({
     where: {
       $or: [
         { userId: userName },
@@ -17,14 +17,38 @@ export let login = async (ctx) => {
         { phone: userName }
       ],
       passWord
-    }
+    },
+    attributes: ['id', 'userId', 'token']
   })
+  if (isEmptyArr(result)) {
+    let error = {
+      code: 1001,
+      msg: '用户名或密码不匹配！'
+    }
+    throw error
+  }
   // 生成token
-  let token = signToken({ userInfo: { userId: result[0].userId } })
-  await models.adminUser.userDB.update({ token }, { where: { userId: result[0].userId } })
+  let token = signToken({ userInfo: { userId: result.userId } })
   // 写入token
-  result[0].token = token
-  ctx.body = res(result[0])
+  result.token = token
+  result.updateAt = Date.now()
+  result.save()
+  ctx.body = res(result)
+}
+
+export let userInfo = async (ctx) => {
+  let result = await models.adminUser.userDB.findOne({
+    where: { userId: ctx.state.userId },
+    attributes: ['userId', 'email', 'phone', 'createAt', 'updateAt']
+  })
+  ctx.body = res(result)
+}
+
+// 后台退出登录
+export let logout = async (ctx) => {
+  let result = await models.adminUser.userDB.update({ token: null }, { where: { userId: ctx.state.userId } })
+  console.log(result)
+  ctx.body = res('退出成功', 'success')
 }
 
 // 后台注册
@@ -51,13 +75,13 @@ export let register = async (ctx) => {
   ctx.body = res(result)
 }
 
-//返回所有用户
+// 返回所有用户
 export let allPpsmUser = async (ctx) => {
   let body = ctx.request.body,
     pageSize = body.pageSize,
     currentPage = body.currentPage
   let result = await models.user.userDB.findAndCountAll({
-    attributes: ['id', 'userId', 'openId', 'nickName', 'gender', 'language', 'city', 'province', 'country', 'avatarUrl', 'createAt'],
+    attributes: ['id', 'userId', 'openId', 'nickName', 'gender', 'language', 'city', 'province', 'country', 'avatarUrl', 'createAt', 'updateAt'],
     limit: pageSize,
     offset: currentPage ? (currentPage - 1) * pageSize : null
   })
