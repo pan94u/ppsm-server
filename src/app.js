@@ -23,16 +23,21 @@ app.keys = ['ppsm2019']
 
 app
   .use(session(SessionConfig, app))
-  .use((ctx, next) => {
+  .use(async (ctx, next) => {
     if (ctx.request.header.host.split(':')[0] === 'localhost' || ctx.request.header.host.split(':')[0] === '127.0.0.1') {
       ctx.set('Access-Control-Allow-Origin', '*')
     } else {
       ctx.set('Access-Control-Allow-Origin', SystemConfig.HTTP_server_host)
     }
-    ctx.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+    ctx.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, authorization')
     ctx.set('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS')
     ctx.set('Access-Control-Allow-Credentials', true) // 允许带上 cookie
-    return next()
+    // 预检全部200通过
+    if (ctx.method == 'OPTIONS') {
+      ctx.body = 200; 
+    } else {
+      return next()
+    }
   })
   .use(ErrorRoutesCatch())
   .use(KoaStatic('assets', path.resolve(__dirname, '../assets'))) // Static resource
