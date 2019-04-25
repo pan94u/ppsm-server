@@ -1,11 +1,24 @@
 import models from '../../models/index'
 import { res, notNull } from '../../tool/Common'
-
+import Sequelize from 'sequelize'
+const Op = Sequelize.Op
 export let collectList = async (ctx) => {
   //分页相关
   let query = ctx.request.query,
-    pageSize = query.pageSize,
-    currentPage = query.currentPage
+    pageSize = parseInt(query.pageSize),
+    currentPage = parseInt(query.currentPage),
+    formId = query.formId ? parseInt(query.formId) : '',
+    replyStatus = parseInt(query.replyStatus)
+  let where = {
+    status: 0,
+    replyStatus,
+    formId: {
+      [Op.like]: `%${formId}%`
+    }
+  }
+  if(where.replyStatus == 0) {
+    delete where.replyStatus
+  }
   let type = ctx.params.type,
     result
   switch (type) {
@@ -18,7 +31,6 @@ export let collectList = async (ctx) => {
             attributes: ['userId', 'openid', 'nickName', 'avatarUrl']
           }
         ],
-        where: { status: 0 },
         limit: pageSize,
         offset: currentPage ? (currentPage - 1) * pageSize : null
       })
@@ -54,8 +66,8 @@ export let collectList = async (ctx) => {
             attributes: [['id', 'volumeId'], ['name', 'volumeName']]
           }
         ],
-        where: { status: 0 },
-        attributes: ['id', 'formId','userId', 'model', 'volume', 'quality', 'targetPrice', 'phoneNumber', 'createAt', 'replyStatus', 'replyText'],
+        where,
+        attributes: ['id', 'formId', 'userId', 'model', 'volume', 'quality', 'targetPrice', 'phoneNumber', 'createAt', 'replyStatus', 'replyText'],
         limit: pageSize,
         offset: currentPage ? (currentPage - 1) * pageSize : null
       })

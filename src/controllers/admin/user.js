@@ -77,9 +77,9 @@ export let register = async (ctx) => {
 
 // 返回所有用户
 export let allPpsmUser = async (ctx) => {
-  let body = ctx.request.body,
-    pageSize = body.pageSize,
-    currentPage = body.currentPage
+  let query = ctx.request.query,
+    pageSize = query.pageSize,
+    currentPage = query.currentPage
   let result = await models.user.userDB.findAndCountAll({
     attributes: ['id', 'userId', 'openId', 'nickName', 'gender', 'language', 'city', 'province', 'country', 'avatarUrl', 'createAt', 'updateAt'],
     limit: pageSize,
