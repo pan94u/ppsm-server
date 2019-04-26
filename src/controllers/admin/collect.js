@@ -28,29 +28,47 @@ export let collectList = async (ctx) => {
         include: [
           {
             model: models.user.userDB,
-            attributes: ['userId', 'openid', 'nickName', 'avatarUrl']
+            attributes: ['id', 'userId', 'openid', 'nickName', 'avatarUrl']
           }
         ],
+        where,
         limit: pageSize,
         offset: currentPage ? (currentPage - 1) * pageSize : null
       })
       result.pageNum = Math.ceil(result.count / pageSize)
+      // 通过找model名来确定嵌套key
+      for(let item in result.rows) {
+        result.rows[item].dataValues.userInfo = result.rows[item].dataValues[`${models.user.userDB.getTableName()}s`][0]
+        delete result.rows[item].dataValues[`${models.user.userDB.getTableName()}s`]
+      }
       break
     case 'company':
       models.company.default.hasMany(models.user.userDB, { foreignKey: 'userId', sourceKey: 'userId' })
-      result = await models.company.default.findAll({
+      models.company.default.hasMany(models.qualityList.qualityListDB, { foreignKey: 'id', sourceKey: 'quality' })
+      result = await models.company.default.findAndCountAll({
         include: [
           {
             model: models.user.userDB,
             attributes: ['userId', 'openid', 'nickName', 'avatarUrl']
+          },
+          {
+            model: models.qualityList.qualityListDB,
+            attributes: [['id', 'qualityId'], ['name', 'qualityName']]
           }
         ],
-        where: { status: 0 },
-        attributes: ['id', 'userId', 'companyName', 'companyContact', 'companyContactPhoneNumber', 'tradeMode', 'model', 'volume', 'quality', 'targetPrice', 'num', 'createAt', 'replyStatus', 'replyText'],
+        where,
+        attributes: ['id', 'formId', 'userId', 'companyName', 'companyContact', 'companyContactPhoneNumber', 'tradeMode', 'model', 'volume', 'quality', 'targetPrice', 'num', 'createAt', 'replyStatus', 'replyText'],
         limit: pageSize,
         offset: currentPage ? (currentPage - 1) * pageSize : null
       })
       result.pageNum = Math.ceil(result.count / pageSize)
+      // 通过找model名来确定嵌套key
+      for(let item in result.rows) {
+        result.rows[item].dataValues.userInfo = result.rows[item].dataValues[`${models.user.userDB.getTableName()}s`][0]
+        result.rows[item].dataValues.volumeInfo = result.rows[item].dataValues[`${models.qualityList.qualityListDB.getTableName()}s`][0]
+        delete result.rows[item].dataValues[`${models.user.userDB.getTableName()}s`]
+        delete result.rows[item].dataValues[`${models.qualityList.qualityListDB.getTableName()}s`]
+      }
       break
     case 'sh':
       models.secondHand.shDB.hasMany(models.user.userDB, { foreignKey: 'userId', sourceKey: 'userId' })
@@ -72,6 +90,13 @@ export let collectList = async (ctx) => {
         offset: currentPage ? (currentPage - 1) * pageSize : null
       })
       result.pageNum = Math.ceil(result.count / pageSize)
+      // 通过手写嵌套key来解嵌套
+      for(let item in result.rows) {
+        result.rows[item].dataValues.userInfo = result.rows[item].dataValues.pss_users[0]
+        result.rows[item].dataValues.volumeInfo = result.rows[item].dataValues.pss_volume_lists[0]
+        delete result.rows[item].dataValues.pss_users
+        delete result.rows[item].dataValues.pss_volume_lists
+      }
       break
     default:
       result = { code: 500, msg: '别瞎请求！' }
