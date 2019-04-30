@@ -10,7 +10,7 @@ export let sh = async (ctx) => {
     result = {}
   //获取成色列表
   for (let i in qualityData) {
-    if ((qualityData[i].apply).indexOf('sh') > -1) {
+    if ((qualityData[i].apply).indexOf('') > -1) {
       qualityList.push({ id: qualityData[i].id, name: qualityData[i].name }
       )
     }
