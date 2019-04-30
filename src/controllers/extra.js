@@ -40,5 +40,33 @@ export let getCaptcha = async (ctx) => {
 }
 
 export let hello = async (ctx) => {
-
+  if(ctx.request.body.key!='ppsm2019') {
+    ctx.body = res('out','bad request', 400)
+    return
+  }
+  // 后台用户表
+  await models.adminUser.userDB.sync({})
+  // 企业采购
+  await models.company.default.sync({})
+  // 国家列表枚举
+  await models.countryList.countryListDB.sync({})
+  // 反馈
+  await models.feedback.feddbackDB.sync({})
+  // pss分组
+  await models.group.groupDB.sync({})
+  // pss型号
+  await models.model.modelDB.sync({})
+  // pss价格
+  await models.price.priceDB.sync({})
+  // 成色列表
+  await models.qualityList.qualityListDB.sync({})
+  // 回收
+  await models.recovery.default.sync({})
+  // 二手求购
+  await models.secondHand.shDB.sync({})
+  // 小程序用户表
+  await models.user.userDB.sync({})
+  // 成色列表
+  await models.volumeList.volumeListDB.sync({})
+  ctx.body = res('success')
 }
