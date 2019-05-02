@@ -20,7 +20,7 @@ export let login = async (ctx) => {
     },
     attributes: ['id', 'userId', 'token']
   })
-  if (isEmptyArr(result)) {
+  if (!result) {
     let error = {
       code: 1001,
       msg: '用户名或密码不匹配！'
