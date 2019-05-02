@@ -14,6 +14,7 @@ export const rcDB = defineModel('pss_recovery', {
     repairCase: Sequelize.STRING, //进水或拆修
     otherCase: Sequelize.STRING, //其他状况
     phoneNumber: Sequelize.STRING, //电话号码
+    targetPrice: Sequelize.STRING, //期望价位
     replyStatus:{
       type: Sequelize.INTEGER,
       defaultValue: 1,

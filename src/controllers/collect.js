@@ -68,10 +68,11 @@ export let addRecoveryRecord = async (ctx) => {
     phoneNumber = notNull(body.phoneNumber, '联系方式'),
     capId = notNull(body.capId),
     capCode = notNull(body.capCode, '验证码'),
+    targetPrice = notNull(targetPrice, '期望价位'),
     userId = ctx.state.userId
   await checkCap(capId, capCode)
   let formId = createFormId()
-  let result = await models.recovery.default.create({ userId, formId, model, volume, country, display, border, warranty, repairCase, otherCase, phoneNumber })
+  let result = await models.recovery.default.create({ userId, formId, model, volume, country, display, border, warranty, repairCase, otherCase, phoneNumber, targetPrice })
   ctx.body = res({ id: result.id }, '添加成功！')
 }
 
