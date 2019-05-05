@@ -1,8 +1,9 @@
 import models from '../../models/index'
 import { res, isEmptyArr, createRandomId, notNull } from '../../tool/Common'
 import { signToken } from '../auth'
+import Sequelize from 'sequelize'
+const Op = Sequelize.Op
 const crypto = require('crypto')
-
 // 后台登录
 export let login = async (ctx) => {
   let body = ctx.request.body,
@@ -79,11 +80,27 @@ export let register = async (ctx) => {
 export let allPpsmUser = async (ctx) => {
   let query = ctx.request.query,
     pageSize = query.pageSize,
-    currentPage = query.currentPage
+    currentPage = query.currentPage,
+    nickName = query.nickName ? query.nickName : '',
+    phone = query.phone ? query.phone : '',
+    status = query.status ? query.status : 0,
+    openId = query.openId ? query.openId : ''
   let result = await models.user.userDB.findAndCountAll({
     attributes: ['id', 'userId', 'openId', 'nickName', 'gender', 'language', 'city', 'province', 'country', 'avatarUrl', 'createAt', 'updateAt'],
     limit: pageSize,
-    offset: currentPage ? (currentPage - 1) * pageSize : null
+    offset: currentPage ? (currentPage - 1) * pageSize : null,
+    where: {
+      nickName: {
+        [Op.like]: `%${nickName}%`
+      },
+      phone: {
+        [Op.like]: `%${phone}%`
+      },
+      openId: {
+        [Op.like]: `%${openId}%`
+      },
+      status
+    }
   })
   result.pageNum = Math.ceil(result.count / pageSize)
   ctx.body = res(result)
