@@ -16,7 +16,8 @@ export let collectList = async (ctx) => {
       [Op.like]: `%${formId}%`
     }
   }
-  if(where.replyStatus == 0) {
+  // 如果不给状态，默认全部
+  if (where.replyStatus == 0) {
     delete where.replyStatus
   }
   let type = ctx.params.type,
@@ -37,7 +38,7 @@ export let collectList = async (ctx) => {
       })
       result.pageNum = Math.ceil(result.count / pageSize)
       // 通过找model名来确定嵌套key
-      for(let item in result.rows) {
+      for (let item in result.rows) {
         result.rows[item].dataValues.userInfo = result.rows[item].dataValues[`${models.user.userDB.getTableName()}s`][0]
         delete result.rows[item].dataValues[`${models.user.userDB.getTableName()}s`]
       }
@@ -63,7 +64,7 @@ export let collectList = async (ctx) => {
       })
       result.pageNum = Math.ceil(result.count / pageSize)
       // 通过找model名来确定嵌套key
-      for(let item in result.rows) {
+      for (let item in result.rows) {
         result.rows[item].dataValues.userInfo = result.rows[item].dataValues[`${models.user.userDB.getTableName()}s`][0]
         result.rows[item].dataValues.volumeInfo = result.rows[item].dataValues[`${models.qualityList.qualityListDB.getTableName()}s`][0]
         delete result.rows[item].dataValues[`${models.user.userDB.getTableName()}s`]
@@ -91,11 +92,37 @@ export let collectList = async (ctx) => {
       })
       result.pageNum = Math.ceil(result.count / pageSize)
       // 通过手写嵌套key来解嵌套
-      for(let item in result.rows) {
+      for (let item in result.rows) {
         result.rows[item].dataValues.userInfo = result.rows[item].dataValues.pss_users[0]
         result.rows[item].dataValues.volumeInfo = result.rows[item].dataValues.pss_volume_lists[0]
         delete result.rows[item].dataValues.pss_users
         delete result.rows[item].dataValues.pss_volume_lists
+      }
+      break
+    case 'feedback':
+      models.feedback.feddbackDB.hasMany(models.user.userDB, { foreignKey: 'userId', sourceKey: 'userId' })
+      // feedback没有formId
+      delete where.formId
+      if(query.id) {
+        where.id = query.id
+      }
+      result = await models.feedback.feddbackDB.findAndCountAll({
+        include: [
+          {
+            model: models.user.userDB,
+            attributes: ['userId', 'openid', 'nickName', 'avatarUrl']
+          }
+        ],
+        where,
+        attributes: ['id', 'userId', 'name', 'email', 'feedback', 'createAt', 'updateAt', 'replyStatus', 'replyText'],
+        limit: pageSize,
+        offset: currentPage ? (currentPage - 1) * pageSize : null
+      })
+      result.pageNum = Math.ceil(result.count / pageSize)
+      // 通过找model名来确定嵌套key
+      for (let item in result.rows) {
+        result.rows[item].dataValues.userInfo = result.rows[item].dataValues[`${models.user.userDB.getTableName()}s`][0]
+        delete result.rows[item].dataValues[`${models.user.userDB.getTableName()}s`]
       }
       break
     default:
