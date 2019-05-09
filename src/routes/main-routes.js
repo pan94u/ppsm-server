@@ -12,7 +12,9 @@ router
   .post('/wxapi/collect/sh', controllers.collect.secondeHandCollect)
   .post('/wxapi/login', controllers.wxapi.code2Session)
   .post('/wxapi/logout', controllers.wxapi.wxLogout)
+  .post('/wxapi/bindPhone', controllers.wxapi.bindPhone)
   .get('/price', controllers.price.Get)
+  .get('/price/origin', controllers.price.origin)
   .get('/price/updateTime', controllers.extra.updateTime)
   .get('/public/get', function (ctx, next) {
     ctx.body = '禁止访问！'
@@ -24,5 +26,6 @@ router
   .get('/wxapi/config/recoveryRecord', controllers.config.recoveryRecord)
   // 获取验证码
   .get('/wxapi/captcha', controllers.extra.getCaptcha)
+  
 
 module.exports = router

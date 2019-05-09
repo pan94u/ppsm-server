@@ -46,7 +46,8 @@ export let code2Session = async (ctx) => {
     province: userInfo.province,
     country: userInfo.country,
     avatarUrl: userInfo.avatarUrl,
-    token: userInfo.token
+    token: userInfo.token,
+    phoneNumber: userInfo.phone
   }
   ctx.body = res(result, 'success')
 }
@@ -86,8 +87,32 @@ async function wxLogin(openid, session_key, encryptedData, signature, iv, token)
     return userInfo
   } else {
     let token = signToken({ userInfo: { userId: user[0].userId } })
-      await models.user.userDB.update({ token }, { where: { userId: user[0].userId }, individualHooks: true })
+      await models.user.userDB.update({ token, session_key }, { where: { userId: user[0].userId }, individualHooks: true })
       user[0].token = token
+      console.log(user[0].phone)
       return user[0]
   }
+}
+
+export let bindPhone = async (ctx) => {
+  let body = ctx.request.body,
+    iv = body.iv,
+    encryptedData = body.encrypted_data,
+    user = await models.user.userDB.findOne({ where: { userId: ctx.state.userId } })
+  let result = await getPhoneNumber(iv, encryptedData, user.session_key)
+  user.phone = result.phoneNumber
+  user.countryCode = result.countryCode
+  await user.save()
+  ctx.body = res({
+    phoneNumber: result.phoneNumber
+  })
+}
+
+// 获取手机号
+export async function getPhoneNumber(iv, encryptedData, session_key) {
+  console.log(...arguments)
+  let pc = new WXBizDataCrypt(ppsmWxappAppId, session_key)
+  let userInfo = await pc.decryptData(encryptedData, iv)
+  console.log(userInfo)
+  return userInfo
 }

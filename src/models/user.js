@@ -17,6 +17,10 @@ export const userDB = defineModel('pss_user', {
       type: Sequelize.STRING,
       allowNull: true
     }, //小程序手机号
+    countryCode: {
+      type: Sequelize.STRING,
+      allowNull: true
+    }, //区号
     gender: {
       type: Sequelize.INTEGER,
       allowNull: true
