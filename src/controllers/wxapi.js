@@ -48,7 +48,7 @@ export let code2Session = async (ctx) => {
     country: userInfo.country,
     avatarUrl: userInfo.avatarUrl,
     token: userInfo.token,
-    phoneNumber: userInfo.phone
+    phoneNumber: userInfo.countryCode == 86 ? maskPhoneNumber(userInfo.phone) : userInfo.phone
   }
   ctx.body = res(result, 'success')
 }
@@ -109,7 +109,7 @@ export let getUserInfo = async (ctx) => {
     country: userInfo.country,
     avatarUrl: userInfo.avatarUrl,
     token: userInfo.token,
-    phoneNumber: userInfo.phone
+    phoneNumber: userInfo.countryCode == 86 ? maskPhoneNumber(userInfo.phone) : userInfo.phone
   }
   ctx.body = res(result, 'success')
 }
@@ -119,21 +119,24 @@ export let bindPhone = async (ctx) => {
   let body = ctx.request.body,
     iv = body.iv,
     encryptedData = body.encrypted_data,
-    user = await models.user.userDB.findOne({ where: { userId: ctx.state.userId } })
+    user = await models.user.userDB.findOne({ where: { userId: ctx.state.userId } }),
+    phoneNumber
   let result = await getPhoneNumber(iv, encryptedData, user.session_key)
   user.phone = result.phoneNumber
   user.countryCode = result.countryCode
   await user.save()
-  ctx.body = res({
-    phoneNumber: result.phoneNumber
-  })
+  ctx.body = res({ phoneNumber: result.phoneNumber })
 }
 
 // 获取手机号
 export async function getPhoneNumber(iv, encryptedData, session_key) {
-  console.log(...arguments)
   let pc = new WXBizDataCrypt(ppsmWxappAppId, session_key)
   let userInfo = await pc.decryptData(encryptedData, iv)
   console.log(userInfo)
   return userInfo
+}
+
+function maskPhoneNumber(phoneNumber) {
+  if (!phoneNumber) { return '' }
+  return phoneNumber.replace(/(\d{3})\d*(\d{4})/, '$1****$2')
 }
