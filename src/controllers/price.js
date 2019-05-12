@@ -51,6 +51,10 @@ export let Get = async (ctx) => {
   ctx.body = res(result, 'success')
 }
 
+export let origin = async (ctx) => {
+  let result = await models.price.priceDB.findAll()
+  ctx.body = res(result)
+}
 function sortByName(propertyName) {
   return function (obj1, obj2) {
     let value1 = obj1[propertyName]
