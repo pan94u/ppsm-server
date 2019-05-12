@@ -11,6 +11,8 @@ const WXBizDataCrypt = require('../tool/WXBizDataCrypt')
 const secretPath = process.env.NODE_ENV == 'production' ? path.resolve() : path.resolve('./AppSercet.key')
 const ppsmWxappAppId = 'wx98da8b39cfd981ed'
 const CODE2SESSION = 'https://api.weixin.qq.com/sns/jscode2session'
+
+// 通过微信登录
 export let code2Session = async (ctx) => {
   let body = ctx.request.body,
     appid = ppsmWxappAppId,
@@ -25,14 +27,13 @@ export let code2Session = async (ctx) => {
     method: 'GET',
     params: { appid, secret, js_code, grant_type: 'authorization_code' }
   })
-  if(login.errcode == 40163) {
+  if (login.errcode == 40163) {
     let error = {
       msg: 'code已被使用，请重新登录！',
       code: 40163
     }
     throw error
   }
-  console.log(login)
   let session_key = login.session_key,
     openid = login.openid
   //用openId登录并返回用户信息
@@ -52,7 +53,8 @@ export let code2Session = async (ctx) => {
   ctx.body = res(result, 'success')
 }
 
-export let wxLogout = async (ctx) => { 
+// 微信登出
+export let wxLogout = async (ctx) => {
   let result = await models.user.userDB.update({ token: null }, { where: { userId: ctx.state.userId } })
   console.log(result)
   ctx.body = res('退出成功', 'success')
@@ -87,13 +89,32 @@ async function wxLogin(openid, session_key, encryptedData, signature, iv, token)
     return userInfo
   } else {
     let token = signToken({ userInfo: { userId: user[0].userId } })
-      await models.user.userDB.update({ token, session_key }, { where: { userId: user[0].userId }, individualHooks: true })
-      user[0].token = token
-      console.log(user[0].phone)
-      return user[0]
+    await models.user.userDB.update({ token, session_key }, { where: { userId: user[0].userId }, individualHooks: true })
+    user[0].token = token
+    console.log(user[0].phone)
+    return user[0]
   }
 }
 
+// 获取用户信息
+export let getUserInfo = async (ctx) => {
+  let userId = ctx.state.userId
+  let userInfo = await models.user.userDB.findOne({ where: { userId } })
+  let result = {
+    userId: userInfo.userId,
+    nickName: userInfo.nickName,
+    gender: userInfo.gender,
+    city: userInfo.city,
+    province: userInfo.province,
+    country: userInfo.country,
+    avatarUrl: userInfo.avatarUrl,
+    token: userInfo.token,
+    phoneNumber: userInfo.phone
+  }
+  ctx.body = res(result, 'success')
+}
+
+// 绑定手机号
 export let bindPhone = async (ctx) => {
   let body = ctx.request.body,
     iv = body.iv,

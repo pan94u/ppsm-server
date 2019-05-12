@@ -10,9 +10,12 @@ router
   .post('/wxapi/collect/addRecoveryRecord', controllers.collect.addRecoveryRecord)
   .post('/wxapi/collect/addEnterprisePurchase', controllers.collect.addEnterprisePurchase)
   .post('/wxapi/collect/sh', controllers.collect.secondeHandCollect)
+
   .post('/wxapi/login', controllers.wxapi.code2Session)
   .post('/wxapi/logout', controllers.wxapi.wxLogout)
+  .get('/wxapi/userInfo', controllers.wxapi.getUserInfo)
   .post('/wxapi/bindPhone', controllers.wxapi.bindPhone)
+
   .get('/price', controllers.price.Get)
   .get('/price/origin', controllers.price.origin)
   .get('/price/updateTime', controllers.extra.updateTime)
