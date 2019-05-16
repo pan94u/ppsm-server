@@ -20,12 +20,11 @@ export let Get = async (ctx) => {
       let priceSingle = await models.price.priceDB.findAll({
         include: [{
           model: models.model.modelDB,
-          attributes: [['name', 'modelName'], 'color', ['weight_apt', 'weight']],
-          order: [['weight_apt', 'ASC']]
+          attributes: [['name', 'modelName'], 'color', ['weight_apt', 'weight']]
         }],
         attributes: ['id', 'price', 'modelId', 'groupId', 'country'],
         where: { groupId, status: 0 },
-        // order: [['modelId', 'ASC']]
+        order: [['modelId', 'ASC']]
       }) //查询价格（左连接型号表）
       for (let i in priceSingle) {
         for (let j in priceSingle[i].sp_model.dataValues) {
@@ -33,7 +32,6 @@ export let Get = async (ctx) => {
         } //遍历model 把结果循环到外层
         delete priceSingle[i].dataValues.sp_model //遍历完成后删除model
       }
-      // priceSingle.sort(sortByName('weight'))
       priceObj = {
         groupId,
         groupName,
