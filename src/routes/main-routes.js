@@ -4,6 +4,7 @@ import controllers from '../controllers/index.js'
 const router = new KoaRouter()
 
 router
+  // collect相关
   .get('/hello', controllers.extra.hello)
   .post('/wxapi/feedback', controllers.extra.wxappFeedback)
   .get('/wxapi/collect', controllers.collect.getAllCollect)
@@ -11,14 +12,17 @@ router
   .post('/wxapi/collect/addEnterprisePurchase', controllers.collect.addEnterprisePurchase)
   .post('/wxapi/collect/sh', controllers.collect.secondeHandCollect)
 
+  // 用户相关
   .post('/wxapi/login', controllers.wxapi.code2Session)
   .post('/wxapi/logout', controllers.wxapi.wxLogout)
   .get('/wxapi/userInfo', controllers.wxapi.getUserInfo)
   .post('/wxapi/bindPhone', controllers.wxapi.bindPhone)
 
+  // 价格相关
   .get('/price', controllers.price.Get)
   .get('/price/origin', controllers.price.origin)
   .get('/price/updateTime', controllers.extra.updateTime)
+
   .get('/public/get', function (ctx, next) {
     ctx.body = '禁止访问！'
   }) // 以/public开头则不用经过权限认证
@@ -29,6 +33,5 @@ router
   .get('/wxapi/config/recoveryRecord', controllers.config.recoveryRecord)
   // 获取验证码
   .get('/wxapi/captcha', controllers.extra.getCaptcha)
-  
 
 module.exports = router

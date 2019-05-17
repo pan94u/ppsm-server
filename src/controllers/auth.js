@@ -64,7 +64,6 @@ export let CheckAuth = () => {
       ctx.state.userId = userId
       return next()
     } catch (err) {
-      console.log(err)
       ctx.status = 403
       ctx.body = {
         code: -1004,
