@@ -79,8 +79,8 @@ export let register = async (ctx) => {
 // 返回所有用户
 export let allPpsmUser = async (ctx) => {
   let query = ctx.request.query,
-    pageSize = query.pageSize,
-    currentPage = query.currentPage,
+    pageSize = parseInt(query.pageSize),
+    currentPage = parseInt(query.currentPage),
     nickName = query.nickName ? query.nickName : '',
     phone = query.phone ? query.phone : '',
     status = query.status ? query.status : 0,
