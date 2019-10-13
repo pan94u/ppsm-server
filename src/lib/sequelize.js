@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize'
 import { DB as DBConfig, System as SystemConfig } from '../config'
 
-let seq = new Sequelize(DBConfig.database, DBConfig.username, DBConfig.password, {
+export let seq = new Sequelize(DBConfig.database, DBConfig.username, DBConfig.password, {
   host: DBConfig.host,
   dialect: SystemConfig.db_type,
   dialectOptions: { // MySQL > 5.5，其它数据库删除此项
@@ -16,6 +16,7 @@ let seq = new Sequelize(DBConfig.database, DBConfig.username, DBConfig.password,
     idle: 10000
   }
 })
+
 
 /**
  * 定义数据模型

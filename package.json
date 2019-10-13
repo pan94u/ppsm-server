@@ -1,8 +1,8 @@
 {
-  "name": "koa2-API-scaffold",
-  "version": "1.0.0",
-  "description": "Koa2 RESTful API 服务器的脚手架",
-  "author": "轶哥 <a@wyr.me>",
+  "name": "ppsm-api-server",
+  "version": "2.1.0",
+  "description": "ppsm-api-server",
+  "author": "pan9",
   "scripts": {
     "start": "gulp nodemon",
     "dev": "gulp",
